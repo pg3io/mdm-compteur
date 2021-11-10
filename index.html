@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Statistiques</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"type="text/css" href="styles.css">
+
+    <style>
+        h2 {
+            font: normal 60px 'Open Sans', sans-serif;
+            text-align: center;
+        }
+        .centered {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform: -webkit-translate(-50%, -50%);
+            transform: -moz-translate(-50%, -50%);
+            transform: -ms-translate(-50%, -50%);
+        }
+        .counter {
+            display: inline-block;
+            width: auto;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+
+<div style="margin-top: 10rem;" class="container">
+    <div class="columns">
+        <div id="instagram" class="column has-text-centered">
+            <p class="title is-1"><i class="fa fa-instagram fa-fw"></i> Instagram</p>
+            <span class="counter instagram title is-2">0</span>
+        </div>
+        <div id="clock" class="column has-text-centered">
+            <p class="title is-1"></p>
+        </div>
+        <div id="compteur" class="column has-text-centered">
+            <p class="title is-1"></p>
+        </div>
+    </div>
+</div>
+
+<audio id="bruitage" class="hide" controls>
+    <source src="bruitage.mp3" type="audio/mp3">
+</audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.slim.js"></script>
+
+<script>
+    $(document).ready(function () {
+        function formatCounter(number) {
+            if (number.toString().length === 2) return number.toString();
+            else return '0'+number.toString()
+        }
+
+        function diffParser(diff) {
+            if (diff > (24 * 3600 * 1000)) {
+                console.log('Not implemented')
+            } else {
+                var nHours = parseInt((diff / 3600000).toString().split('.')[0]);
+                var nMinutes = (diff / 60000).toString().split('.')[0];
+                nMinutes -= nHours * 60;
+                var nSeconds = (diff / 1000).toString().split('.')[0];
+                nSeconds -= (nMinutes * 60) + nHours * 3600;
+                
+                $('div#compteur').children('p').text(`${formatCounter(nHours)}:${formatCounter(nMinutes)}:${formatCounter(nSeconds)}`)
+            }
+        }
+
+        var socket = io();
+        socket.on('end hour', function (end_hour) {
+            setInterval(function() {
+                var diff = (end_hour) - (new Date().getTime());
+                diffParser(diff);
+            }, 1000)
+        });
+        socket.on('refresh counter instagram', function (counter) {
+            $('span.counter.instagram').text(counter.toString());
+        });
+        setInterval(function() {
+            var now_str  = new Date().toTimeString().split(' ')[0];
+            $('div#clock').children('p').text(now_str)
+        }, 1000)
+
+    });
+</script>
+
+</body>
+</html>
