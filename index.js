@@ -3,7 +3,10 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 const config = require('./config')
-var instagram = require('./providers/instagram');
+if (config.instagram.active)
+    var instagram = require('./providers/instagram');
+if (config.twitter.active)
+    var twitter = require('./providers/twitter');
 
 app.use(express.static('public'));
 
@@ -20,14 +23,24 @@ io.on('connection', function(socket) {
         console.log('Déconnexion du serveur');
     });
     setInterval(function () {
-        instagram.get(function (error, result) {
-            if(!error && result) {
-                io.emit('refresh counter instagram', result);
-                console.log('refresh counter instagram', result);
-            } else {
-                console.error('Instagram:', error);
-            }
-        });
+        if (config.twitter.active)
+            twitter.get(function (error, result) {
+                if (!error && result) {
+                    io.emit('refresh counter twitter', result)
+                    console.log('refresh counter twitter', result);
+                } else {
+                    console.error('Twitter:', error);
+                }
+            });
+        if (config.instagram.active)
+            instagram.get(function (error, result) {
+                if(!error && result) {
+                    io.emit('refresh counter instagram', result);
+                    console.log('refresh counter instagram', result);
+                } else {
+                    console.error('Instagram:', error);
+                }
+            });
     }, config.interval_seconds * 1000);
 });
 

@@ -38,10 +38,16 @@
 
 <div style="margin-top: 10rem;" class="container">
     <div class="columns">
-        <div id="instagram" class="column has-text-centered">
+        <div id="instagram" class="column has-text-centered hide">
             <p class="title is-1"><i class="fa fa-instagram fa-fw"></i> Instagram</p>
             <span class="counter instagram title is-2">0</span>
         </div>
+        <div id="twitter" class="column has-text-centered hide">
+            <p class="title is-1"><i class="fa fa-twitter fa-fw"></i> Twitter</p>
+            <span class="counter twitter title is-2">0</span>
+        </div>
+    </div>
+    <div class="columns">
         <div id="clock" class="column has-text-centered">
             <p class="title is-1"></p>
         </div>
@@ -82,17 +88,20 @@
         var socket = io();
         socket.on('end hour', function (end_hour) {
             setInterval(function() {
+                var now_str  = new Date().toTimeString().split(' ')[0];
+                $('div#clock').children('p').text(now_str)
                 var diff = (end_hour) - (new Date().getTime());
                 diffParser(diff);
             }, 1000)
         });
         socket.on('refresh counter instagram', function (counter) {
             $('span.counter.instagram').text(counter.toString());
+            if ($('#instagram').hasClass('hide')) $('#instagram').removeClass('hide');
         });
-        setInterval(function() {
-            var now_str  = new Date().toTimeString().split(' ')[0];
-            $('div#clock').children('p').text(now_str)
-        }, 1000)
+        socket.on('refresh counter twitter', function (counter) {
+            $('span.counter.twitter').text(counter.toString());
+            if ($('#twitter').hasClass('hide')) $('#twitter').removeClass('hide');
+        })
 
     });
 </script>

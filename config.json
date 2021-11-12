@@ -1,11 +1,20 @@
 {
   "interval_seconds": 30,
-  "end_hour": "2021-11-10T23:00:01+0100",
+  "end_hour": "2021-11-12T23:00:01+0100",
   "instagram": {
+    "active": true,
     "credentials" : {
       "username": "1.1_c_lolo",
       "password": "Olfactif666"
     },
     "target_username": ""
+  },
+  "twitter": {
+    "active": true,
+    "consumer_key": "kxpbRAfLPVAt2pfnmSpwA2eAi",
+    "consumer_secret": "9AFCZbKgEoSvM4LrQqbruogVgdUjs5zEb9RI5f5zzCbxMfAoyW",
+    "access_token_key": "1417402822245638174-4NOEel47ELYTxFU7qvHQowZdJdWptf",
+    "access_token_secret": "k8YDAwt8MZpOkP8WNTYL9DkP1eSPjUpNm1zX3VgRGrvdK",
+    "target_id": 77223280
   }
 }
