@@ -18,7 +18,24 @@ io.on('connection', function(socket) {
     var end_hour = new Date(config.end_hour)
     io.emit('end hour', end_hour.getTime());
     console.log('Nouvelle connexion au serveur !');
-    
+    if (config.twitter.active)
+        twitter.get(function (error, result) {
+            if (!error && result) {
+                io.emit('refresh counter twitter', result)
+                console.log('refresh counter twitter', result);
+            } else {
+                console.error('Twitter:', error);
+            }
+        });
+    if (config.instagram.active)
+        instagram.get(function (error, result) {
+            if(!error && result) {
+                io.emit('refresh counter instagram', result);
+                console.log('refresh counter instagram', result);
+            } else {
+                console.error('Instagram:', error);
+            }
+        });
     socket.on('disconnect', function() {
         console.log('Déconnexion du serveur');
     });
